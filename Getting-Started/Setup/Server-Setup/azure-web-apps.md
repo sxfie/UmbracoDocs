@@ -18,7 +18,7 @@ Umbraco will run on Azure Web Apps but there are some configuration options and 
 
 ## Recommended configuration
 
-You need to these `appSettings`:
+You need to have these `appSettings`:
 
 ```xml
 <add
