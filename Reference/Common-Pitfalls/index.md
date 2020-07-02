@@ -1,5 +1,5 @@
 ---
-versionFrom: 7.0.0
+versionFrom: 8.0.0
 needsV8Update: "true"
 ---
 
@@ -7,105 +7,25 @@ needsV8Update: "true"
 
 _This section is ultra important! It will describe many common pitfalls that developers fall in to. Some of the anti-patterns mentioned here can bring your site to a grinding halt, cause memory leaks, or make your site unstable or perform poorly. Make sure you read this section - it might save your site!_
 
-## Usage of Singletons and Statics
+:::note
+There is a different version of this article for Umbraco V7 - the common pitfalls and anti-patterns are slightly different for each version of Umbraco.
+:::
 
-Generally speaking if you are writing software these days you should be using Dependency Injection principles.
-If you do this, you probably aren't using Singletons or Statics (and for the most part you shouldn't be!). Since Umbraco itself is not built with an IoC container to use out of the box you may find yourself using Umbraco's built in Singleton accessors like:
-`ApplicationContext.Current` or `UmbracoContext.Current`. In most cases you shouldn't be using these Singleton accessors. It makes your code very difficult to test but more importantly using Singletons and Statics in your code make it very hard
-to manage, APIs become leaky and ultimately you'll end up with more problems than when you started.
+REMOVED - Usage of Singletons - think it would be good if people were aware of accessing services via properties on base classes, but feel now it would be hard to accidentally use Singletons in V8? and using Service Locator isn't an anti-pattern that's a performance thing?
 
-In all Umbraco base classes that you'll normally use, these objects are already exposed as properties, so please use these instead!
-For example, all Razor views that Umbraco creates expose an `UmbracoContext` property which is the UmbracoContext, they expose an `ApplicationContext`
-property which is Umbraco's `ApplicationContext`. The other base classes that expose all the instances you need are things like `SurfaceController`,
-`UmbracoApiController`, `UmbracoController`, `RenderMvcController`, `UmbracoUserControl`, `UmbracoPage`, `UmbracoHttpHandler`, and the list goes on...
+REMOVED - static references to web request instances - be hard to 'new up' an UmbracoHelper given the more complicated signature?
+  public UmbracoHelper(IPublishedContent currentPage,
+            ITagQuery tagQuery,
+            ICultureDictionaryFactory cultureDictionary,
+            IUmbracoComponentRenderer componentRenderer,
+            IPublishedContentQuery publishedContentQuery,
+            MembershipHelper membershipHelper)
+ Do we still need to warn about this?   
+ 
+ Do think it's important to know about Scope, but that is documented elsewhere, rather than being a specific pitfall?
 
-__Example of using base class properties instead of Singleton accessors:__
-
-_This example shows how you can access all sorts of Umbraco services in a `SurfaceController` without
-relying on Singletons. These same properties exist on all of Umbraco's base classes that you commonly use
-including razor views._
-
-```csharp
-public class ContactFormSurfaceController: SurfaceController
-{
-    [HttpPost]
-    public ActionResult SubmitForm(ContactFormModel model)
-    {
-        // TODO: All normal form processing logic is left out of this example for brevity
-
-        // You can access all of these because they are properties of the base class,
-        // notice there is no Singleton accessors used!
-
-        // ProfilingLogger:
-        using (ProfilingLogger.TraceDuration<ContactFormSurfaceController>("start", "stop"))
-        {
-            // Logger:
-            Logger.Warn<ContactFormSurfaceController>("warning!");
-
-            // MembershipHelper:
-            Members.CurrentUserName;
-
-            // ServiceContext:
-            Services.ContentService.GetById(1234);
-
-            // ApplicationContext:
-            ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem("myKey", () => "hello world");
-
-            // UmbracoContext:
-            UmbracoContext.UrlProvider.GetUrl(4321);
-
-            // DatabaseContext:
-            DatabaseContext.Database.ExecuteScalar<int>("SELECT COUNT(*) FROM umbracoNode");
-        }
-    }
-}
-```
-
-So next time you are using `ApplicationContext.Current` or `UmbracoContext.Current`, think "Why am I doing this?",
-"Is this already exposed as a property of the base class that I'm using?", "I'm using Dependency Injection, I should be injecting this instance into my class."
-
-## Static references to web request instances (such as `UmbracoHelper`)
-
-__Example 1:__
-
-```csharp
-private static _umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-```
-
-This practice can cause memory leaks along with inconsistent data results when using this `_umbracoHelper` instance.
-
-__Why?__
-
-It's important to understand the difference between an object that has a Request based scope/lifespan and
-an object that has an Application based scope/lifespan ... here's the gist:
-
-* Application scope - if an object has an application scope/lifespan, that means that this single object
-instance will exist for the lifetime of the application. The single instance will be shared by every thread that
-accesses it. Static variables will always be application scope/lifespan.
-* Request scope - The web world is made up of requests and each request has its own thread. When an object is in the scope of a Request it only survives as long as the web request survives. At the end of the web request, it may either be disposed or cleared from memory
-by the garbage collector. Request scoped object instances are not accessed by every other thread in the application - __unless you do something like the above!__
-
-An example of an application scoped instance is Umbraco's `ApplicationContext`, this single instance is shared by all threads and exists for the lifetime of
-the application.
-
-An example of a request scoped instance is the `HttpContext`. This object exists for a single request and it definitely cannot be shared between other threads and especially not other request threads. This is because it is where the security information for a given user is stored! The `UmbracoContext` is also a request scoped object - in fact it
-relies directly on an instance of `HttpContext`. The `UmbracoHelper` is a request scoped object - as you can see above, it requires an instance of an `UmbracoContext`.
-
-So... in the above example, the `UmbracoHelper` which relies on an `UmbracoContext` which relies on an `HttpContext` will now be statically assigned to a variable, which means
-that these particular request scoped objects are now bound to an Application scope lifetime and will never go away. This could mean that under certain circumstances that an entire Umbraco
-cache copy is stuck in memory, or that the `Security` property of the context will be accessed by multiple threads but this now contains the security information for a user for another request!
-
-__Other Examples:__
-
-```csharp
-private static _umbracoContext = UmbracoContext.Current;
-
-// MembershipHelper is also a request scoped instance - it relies either on an UmbracoContext or an HttpContext
-private static _membershipHelper = new MembershipHelper(UmbracoContext.Current);
-
-private static _request = HttpContext.Current.Request;
-```
-
+KEEP - this is less of an issue with nucache? but still worth flagging?
+UPDATE EXAMPLES FOR V8
 ## Querying with Descendants, DescendantsOrSelf
 
 It's not 100% bad that you use these queries, you need to understand the implications.
@@ -151,6 +71,8 @@ This can be re-written as:
 
 In many cases you might know that there is only ever going to be a small number of Descendants . If so then go nuts and use Descendants or DescendantsOrSelf. It's important to be aware of the implications of what you are writing.
 
+KEEP - still think this is worth mentioning, though text would need updating
+UPDATE EXAMPLES FOR V8
 ## Too much querying (Over querying)
 
 Querying content is not Free! Anytime you make a query or resolve a property value be aware that there is overhead involved.
@@ -187,38 +109,8 @@ for the same value. Instead this can be rewritten as:
     }
 </ul>
 ```
-
-## Dynamics
-
-In Umbraco version 8+ dynamic support for access to IPublishedContent will be removed.
-There are a few reasons for this:
-
-* Dynamics are much slower than their strongly typed equivalent
-* The codebase for Dynamics is difficult to maintain and its massive
-* Many querying concepts in Dynamics are difficult to understand and need to be memorized due to all of the string syntax required
-* It is much harder to debug and to know if there are errors since the syntax is not typed or compiled
-* No intellisense is possible inside Visual Studio
-* [Models Builder](../Templating/Modelsbuilder/) is part of the Umbraco Core and provides much nicer and strongly typed access to property accessors and querying in your views
-
-How do you know if you are using Dynamics?
-
-* If you are using `@CurrentPage` then __you are__ using dynamics
-* If you are using the UmbracoHelper query methods like `@Umbraco.Content` or `@Umbraco.Media` instead of the typed methods like `@Umbraco.TypedContent` and `@Umbraco.TypedMedia` then __you are__ using dynamics
-
-It is strongly advised that you use the strongly typed `@Model.Content` instead of `@CurrentPage` models in your views,
-this will perform much better and you'll be forward compatible with Umbraco v8+ with regards to querying `IPublishedContent`.
-
-A large problem with the performance of dynamics is having to parse string syntax such as:
-`@CurrentPage.Children.Where("DocumentTypeAlias == \"DatatypesFolder\" && Visible")` and turn that into something that is compilable when
-instead it can be written as something that compiles
-
-:::note
-About the Query Builder: We are aware that the Query Builder in the template editor of the backoffice currently
-uses dynamics. We will eventually replace the query logic in this dialog with strongly typed model (Models Builder) syntax to follow
-these best practices. In the meantime if you are concerned about performance and have a large site then we'd recommend if you use the
-Query Builder to update its results with strongly typed syntax.
-:::
-
+KEEP
+UPDATE EXAMPLES FOR V8
 ## Using the Services layer in your views
 
 The Services layer of Umbraco is for manipulating the business logic of Umbraco directly to/from the database.
@@ -232,30 +124,16 @@ __For example__, when retrieving a content item in your views:
 
 ```csharp
 // Services access in your views :(
-var dontDoThis = ApplicationContext.Services.ContentService.GetById(123);
+var dontDoThis = Services.ContentService.GetById(123);
 
 // Content cache access in your views :)
-var doThis = Umbraco.TypedContent(123);
+var doThis = Umbraco.Content(123);
 ```
 
-If you are using `Application.Services...` in your views, you should figure out why this is being done and, in most cases, remove this logic.
+If you are using `Services` in your views for readonly actions, you should figure out why this is being done and, in most cases, replace this logic.
 
-## Using UmbracoContext to access ApplicationContext
-
-You should not access the `ApplicationContext` via the `UmbracoContext`.
-
-For example: `UmbracoContext.Current.Application` _<-- this is now deprecated/obsolete_
-
-If you need access to both the `UmbracoContext` and the `ApplicationContext`, you should do one of the following:
-
-* Access these services via the properties exposed on the Umbraco base class you are using (i.e. Controllers, views, controls, http handler, etc...)
-* Or inject these services into the services you are using
-* Or access each of these services from their own singleton constructs: `UmbracoContext.Current` and `ApplicationContext.Current`.
-
-The reason why this is bad practice is that it has caused confusion and problems in the past. In some cases developers would always
-access the `ApplicationContext` from the `UmbracoContext` but as we now know, this won't always work because the `UmbracoContext` is a request
-scoped instance which isn't going to be available when executing code in a non-request scope (i.e. background thread).
-
+KEEP
+UPDATE EXAMPLES FOR V8
 ## Using Umbraco content items for volatile data
 
 This is one of the worst Umbraco anti-patterns and could very well cause your site to perform ultra poorly.
@@ -271,6 +149,8 @@ Some examples of what not to do are:
 * Importing lots of data into Umbraco content nodes that could be stored in a custom database table (i.e. it's not going to be edited).
 In some cases this might be ok but many times we've seen bulk imports occur on an hourly/daily schedule which is generally unnecessary.
 
+KEEP - but would need updating for Components
+UPDATE EXAMPLES FOR V8
 ## Processing during startup
 
 Umbraco allows you to run some initialization code during startup by using `ApplicationEventHandler`, however great
@@ -293,6 +173,7 @@ application even when your app domain is restarted. If your initialization logic
 similar to that, where it should only be executed one time only. Then you should set a persistent flag (such as a file) to
 indicate to your own logic that the initialization code has already executed and doesn't need to be done again.
 
+KEEP - seeing this less often, but still worth flagging
 ## Rebuilding indexes
 
 Far too often we've seen code in people's solutions that rebuild the Examine indexes
@@ -309,6 +190,8 @@ The primary reasons your data will become out of sync are:
 It is not recommended to rebuild your indexes unless you absolutely need to and if you need to do this often then it is
 advised to determine why and to try to resolve the underlying problem.
 
+KEEP - the principle of this problem still exists, but the 'couple of well know Examine events' are no longer 'well known' :-P
+UPDATE EXAMPLES FOR V8
 ## Performing lookups and logic in Examine events
 
 There's a couple well known Examine events: `GatheringNodeData` and `DocumentWriting`. Both of these events
@@ -322,6 +205,7 @@ Similarly, if you are executing other logic in these events that perform poorly,
 it will slow that process down. And, of course, if you rebuild an index then any slow code running in these events will cause the indexing
 to go ultra slow.
 
+KEEP - I've not seen this for a long time in the wild, but still relevant
 ## RenderTemplate
 
 There is an API in Umbraco that should never be used unless you really know what you are doing. This API method
@@ -332,6 +216,8 @@ you must be very careful not to use this for purposes it is not meant to be used
 Generally speaking this method should not be used for the normal rendering of content. If abused this could cause severe
 performance problems. For normal content rendering of module type data from another content item, you should use Partial Views instead.
 
+KEEP - this always crops up - seeing it alot in extended Modelsbuilder Models
+UPDATE EXAMPLES FOR V8 - POSSIBLY WITH MODELSBUILDER EXAMPLE
 ## Don't put logic inside your constructors
 
 Constructors should generally not perform any logic, they should set some parameter values, perform some null checks and perhaps validate some data but in most cases, they should not perform any logic.
@@ -360,10 +246,10 @@ public class RecipeModel : PublishedContentWrapped
         RelatedRecipes = content
             .Parent
             .Children
-            .Where(x => x.GetPropertyValue<IEnumerable<int>>("related")
+            .Where(x => x.Value<IEnumerable<int>>("related")
                             .Contains(content.Id));
 
-        Votes = content.GetPropertyValue<int>("votes");
+        Votes = content.Value<int>("votes");
     }
 
     public int Votes { get; private set; }
@@ -400,6 +286,8 @@ _Side note: The other problem is the logic used to lookup related recipes is inc
 
 Which leads us on to the next anti-pattern...
 
+KEEP
+UPDATE EXAMPLES FOR V8 - possibly with Modelsbuilder example
 ## Don't eager load data, lazy load it instead
 
 The above example could be rewritten like this:
@@ -449,7 +337,7 @@ This is still not great though. There really isn't much reason to create a `Reci
 this is allocating a lot of objects to memory for no real reason. This could be written like:
 
 ```csharp
-@var recipeNode = Umbraco.TypedContent(3251);
+@var recipeNode = Umbraco.Content(3251);
 <ul>
 @foreach(var recipe in recipeNode.Children
                             .OrderByDescending(x => x.GetPropertyValue<int>("votes"))
@@ -464,6 +352,9 @@ This is slightly better:
 
 This means that there is now a minimum of __10,000__ new objects created and allocated in memory. The number of traversals/visits to each
 of these objects is now __5000__.
+
+UPDATE - This is no longer super true? I think Nucache means that LINQ will now always be faster than XPATH, and XPATH is implemented on top of NuCache, so there is nothing to 'gain' by using XPATH except familarisation of querying tree content syntax - but big question - is using XPATH as much of a performance kill to be a common pitfall or is it just 'ok'?
+If so we can REMOVE this section instead of UPDATING.
 
 ## Too much LINQ - XPath is still your friend
 
@@ -488,6 +379,7 @@ on your XPath query but without creating interim `IPublishedContent` instances t
 These 2 methods can certainly help avoid using LINQ (and as such allocating IPublishedContent instances)
 to perform almost any content filtering you want.
 
+REMOVE? would you just use LINQ now as above comment
 ## XPathNodeIterator - for when you need direct XML support
 
 Using the `GetXPathNavigator` method is a little more advanced but can come in very handy to solve some performance problems when
