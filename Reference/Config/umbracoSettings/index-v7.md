@@ -1,5 +1,6 @@
 ---
-versionFrom: 8.0.0
+versionFrom: 7.0.0
+verionTo: 7.15.0
 meta.Title: "umbracoSettings.config options in Umbraco"
 meta.Description: "Reference on umbracoSettings.config options in Umbraco"
 ---
@@ -9,13 +10,13 @@ meta.Description: "Reference on umbracoSettings.config options in Umbraco"
 Here you will be able to find documentation on all the options you can modify in the umbracoSettings.config file.
 
 :::warning
-Many of these settings are not explicitly contained in the configuration file that is shipped with Umbraco and most of these settings have default values assigned.
+In v7+ many of these settings are not explicitly contained in the configuration file that is shipped with Umbraco and most of these settings have default values assigned.
 These default values will be expressed below and you can insert these configuration items in the file to override the defaults.
 :::
 
 ## Backoffice
 
-Below you can see the settings that affect the Umbraco backoffice.
+Below you can see the settings that affect the Umbraco backoffice (v7.8+)
 
 ### Tours
 
@@ -36,7 +37,20 @@ By default this is set to true. Set it to false to turn off [backoffice tours](.
 
 Below you can see settings that affects content in Umbraco.
 
+### Obsolete data types
+
+This section is used for controlling whether or not the data types marked as obsolete should be visible in the dropdown when creating new data types.
+
+```xml
+<showDeprecatedPropertyEditors>false</showDeprecatedPropertyEditors>
+```
+
+**`enable`**
+By default this is set to false. To make the obsolete data types visible in the dropdown change the value to **true**.
+
 ### Imaging
+
+<small>This was introduced in 4.8 but is first used with the new media archive in 4.9</small>
 
 This section is used for managing thumbnail creation, allowed attributes and, which properties of an image that should be automatically updated on upload.
 
@@ -231,6 +245,7 @@ Umbraco comes with a built-in action handler that ensures that 2 pages does not 
 **`<TidyEditorContent>`**
 
 By setting the value to "true" tidy will be Used to clean Richtext Editor content.
+**NOTE: This has been changed from "True" to "False" as default with the release of 4.9**.
 
 The benefit of disabling tidy is that HTML5 elements and IFRAMEs can be inserted into the rich text editor without being removed.
 
@@ -250,7 +265,8 @@ Character encoding for Tidy.
 
 **`<ForceSafeAliases>`**
 
-This setting allows you to disable the safe aliases, when you're creating properties on your document types. 
+This setting allows you to disable the safe aliases, when you're creating properties on your document types. As the comment below states you really
+should not turn this off. Please also note that this option is most likely removed in a future Umbraco release - see http://issues.umbraco.org/issue/U4-867
 
 ```xml
 <!-- Whether to force safe aliases (no spaces, no special characters) at businesslogic level on contenttypes and propertytypes -->
@@ -292,6 +308,16 @@ In case Umbraco is taking a bit of time to prepare content to display you can di
 ```xml
 <!-- Show the /config/splashes/booting.aspx page while initializing content -->
 <EnableSplashWhileLoading>False</EnableSplashWhileLoading>
+```
+
+**`<PropertyContextHelpOption>`**
+
+***This option has become obsolete in v7+. It will always be displayed as text***
+
+The setting controls what kind of context help is displayed next to editor fields in the content section.  It can either be display as a small icon with text on mouse hover: (set it to `icon`) Set to displaying the help text directly under the field name (set it to `text`), or not be displayed at all (set to `none`).
+
+```xml
+<PropertyContextHelpOption>text</PropertyContextHelpOption>
 ```
 
 **`<PreviewBadge>`**
