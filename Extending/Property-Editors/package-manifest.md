@@ -148,6 +148,12 @@ The defaultConfig object provides a collection of default configuration values i
     "random": 1234
 }
 ```
+:::note
+When providing defaultConfig for a Macro Parameter Editor, to wrap an existing Property Editor make sure you have defined a PreValues section in the package.manifest, even if it is empty... or the DefaultConfig won't be read:
+```json
+"prevalues": { },
+```
+:::
 
 ## Grid Editors
 Similar to how the `propertyEditors` array defines one or more property editors, `gridEditors` can be used to define editors specific to the grid. Setting up the default richtext editor in the Umbraco grid could look like:
