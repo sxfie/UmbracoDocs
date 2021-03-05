@@ -1,4 +1,6 @@
 ---
+meta.Title: "Umbraco Sections & Trees"
+meta.Description: "An explanation on sections and trees in Umbraco"
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Section-Trees/index.md"
 state: complete
 verified-against: alpha-3

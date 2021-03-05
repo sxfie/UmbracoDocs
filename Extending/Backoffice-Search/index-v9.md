@@ -1,4 +1,6 @@
 ---
+meta.Title: "Backoffice Search"
+meta.Description: "A guide to customization of Backoffice Search"
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Backoffice-Search/index.md"
 versionFrom: 9.0.0
 state: partial

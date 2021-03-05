@@ -1,4 +1,6 @@
 ---
+meta.Title: "Umbraco Packages"
+meta.Description: "A package extends the functionality of Umbraco to provide additional functionality to editors, developers, site visitors, and all other types of users of Umbraco."
 versionFrom: 9.0.0
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Packages/index.md"
 verified-against: alpha-3

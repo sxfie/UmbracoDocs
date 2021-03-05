@@ -1,4 +1,6 @@
 ---
+meta.Title: "Umbraco Sections"
+meta.Description: "A guide to creating a custom section in Umbraco"
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Section-Trees/sections.md"
 state: complete
 verified-against: alpha-3

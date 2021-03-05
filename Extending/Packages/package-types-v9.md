@@ -1,4 +1,6 @@
 ---
+meta.Title: "Umbraco Package Types"
+meta.Description: "Types of packages in Umbraco"
 versionFrom: 9.0.0
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Packages/package-types.md"
 verified-against: alpha-3

@@ -1,4 +1,6 @@
 ---
+meta.Title: "Packages on Umbraco Cloud"
+meta.Description: "Things to consider for package development and usage in Umbraco Cloud"
 versionFrom: 9.0.0
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Packages/Packages-on-Umbraco-Cloud/index.md"
 verified-against: alpha-3

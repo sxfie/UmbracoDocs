@@ -1,4 +1,6 @@
 ---
+meta.Title: "Umbraco Tree Actions"
+meta.Description: "A guide to creating a custom tree action in Umbraco"
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Section-Trees/tree-actions.md"
 state: complete
 verified-against: alpha-3

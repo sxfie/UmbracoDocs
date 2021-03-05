@@ -1,4 +1,6 @@
 ---
+meta.Title: "Umbraco Database"
+meta.Description: "A guide to creating a custom Database table in Umbraco"
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Database/index.md"
 versionFrom: 9.0.0
 verified-against: alpha-3

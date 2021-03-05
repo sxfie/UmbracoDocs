@@ -1,11 +1,12 @@
 ---
+meta.Title: "Umbraco Property Editors"
+meta.Description: "Guide on how to work with and create Property Editors in Umbraco"
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Property-Editors/index.md"
 state: partial
 updated-links: false
 verified-against: alpha-3
 versionFrom: 9.0.0
 ---
-
 
 # Property Editors
 

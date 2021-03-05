@@ -1,4 +1,6 @@
 ---
+meta.Title: "Creating a package"
+meta.Description: "Tutorial to create a package in Umbraco"
 versionFrom: 9.0.0
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Packages/Creating-a-Package/index.md"
 verified-against: alpha-3

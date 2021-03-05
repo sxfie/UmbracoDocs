@@ -1,4 +1,6 @@
 ---
+meta.Title: "Umbraco Tree"
+meta.Description: "A guide to creating a custom tree in Umbraco"
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Section-Trees/trees.md"
 state: partial
 updated-links: false

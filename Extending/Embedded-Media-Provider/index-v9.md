@@ -1,4 +1,6 @@
 ---
+meta.Title: "Umbraco Embed Providers"
+meta.Description: "A guide to creating a custom embed providers in Umbraco"
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Embedded-Media-Provider/index.md"
 versionFrom: 9.0.0
 verified-against: alpha-3
@@ -43,6 +45,7 @@ You can see the details of these, and any recent editions in the C# developer re
 ## Configuring a new provider
 
 Create a new provider by creating a C# class that implements the `IEmbedProvider` interface. Umbraco provides a convenient `EmbedProviderBase` class as a starting point.
+
 ```csharp
 namespace Umbraco.Cms.Core.Media.EmbedProviders
 {

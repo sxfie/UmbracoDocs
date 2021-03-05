@@ -1,4 +1,6 @@
 ---
+meta.Title: "Package actions"
+meta.Description: "Information on how to add actions to your Umbraco package"
 versionFrom: 9.0.0
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Packages/Package-Actions/index.md"
 verified-against: alpha-3

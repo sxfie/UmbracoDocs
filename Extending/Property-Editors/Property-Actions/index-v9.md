@@ -1,4 +1,6 @@
 ---
+meta.Title: "Umbraco Property Editors - Property Actions"
+meta.Description: "Guide on how to implement Property Actions for Property Editors in Umbraco"
 v8-equivalent: "https://github.com/umbraco/UmbracoDocs/blob/main/Extending/Property-Editors/Property-Actions/index.md"
 versionFrom: 9.0.0
 verified-against: alpha-3
